@@ -1,0 +1,38 @@
+{
+  "name": "ai-playwright",
+  "version": "1.0.0",
+  "description": "AI in Testing examples",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "tsc && node dist/app.js",
+    "build": "tsc",
+    "dev": "tsc && node dist/app.js",
+    "ts": "ts-node ai.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.3.3",
+    "@types/node": "^22.8.1",
+    "@types/sanitize-html": "^2.16.0",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0"
+  },
+  "dependencies": {
+    "@langchain/core": "^0.3.77",
+    "@langchain/openai": "^0.6.13",
+    "@playwright/test": "^1.55.1",
+    "axe-playwright": "^2.2.2",
+    "ts-node": "^10.9.2",
+    "sanitize-html": "^2.17.0",
+    "tsx": "^4.19.2",
+    "uuid": "^11.0.2"
+  }
+}

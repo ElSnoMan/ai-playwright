@@ -1,0 +1,52 @@
+{
+  "editor.tabSize": 2,
+  "editor.indentSize": "tabSize",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.wordWrap": "off",
+  "editor.rulers": [160],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "prettier.requireConfig": true,
+  "prettier.singleQuote": true,
+  "prettier.jsxSingleQuote": false,
+  "prettier.trailingComma": "es5",
+  "prettier.semi": false,
+  "prettier.arrowParens": "avoid",
+  "prettier.printWidth": 160,
+  "editor.formatOnSaveMode": "modifications",
+  "eslint.format.enable": true,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    }
+  },
+  "playwright.env": {
+    "NODE_OPTIONS": "--loader ts-node/esm --experimental-specifier-resolution=node --no-experimental-strip-types"
+  },
+  "terminal.integrated.env.windows": {
+    "NODE_OPTIONS": "--no-experimental-strip-types"
+  }
+}
