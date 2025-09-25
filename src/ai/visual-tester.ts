@@ -1,18 +1,24 @@
 import { Page, test } from '@playwright/test'
 import sanitizeHtml from 'sanitize-html'
 import { HumanMessage } from '@langchain/core/messages'
+import { z } from 'zod'
 import llm from './ai-client'
 
+export const VisualTestResultSchema = z.object({
+  success: z.boolean().describe('Whether the visual test condition is met'),
+  reason: z.string().describe('Brief explanation of the analysis result'),
+  locators: z
+    .array(z.string())
+    .optional()
+    .describe('Playwright locators for elements used in analysis (e.g., "text=Submit", "data-testid=login-button", "#header-nav")'),
+})
 
-export interface VisualTestResult {
-  success: boolean
-  reason: string
-  locators?: string[] // Playwright locators for elements used in analysis
-}
-
+export type VisualTestResult = z.infer<typeof VisualTestResultSchema>
 
 export class VisualTester {
-  private client = llm
+  private client = llm.withStructuredOutput(VisualTestResultSchema, {
+    name: 'visual_test_analysis',
+  })
 
   constructor(readonly page: Page) {}
 
@@ -30,11 +36,6 @@ export class VisualTester {
       const screenshot = await this.page.screenshot()
       const base64Image = screenshot.toString('base64')
       const domSnapshot = await this._getDOMSnapshot()
-      let result: VisualTestResult = {
-        success: false,
-        reason: 'No reason provided',
-        locators: [],
-      }
 
       try {
         const message = new HumanMessage({
@@ -44,11 +45,6 @@ export class VisualTester {
               text: `You are a visual testing assistant. Analyze the provided screenshot and DOM structure to answer the following question: "${prompt}"
 
                   You have access to both the visual screenshot and the sanitized HTML structure of the page.
-
-                  Please respond with a JSON object containing:
-                  - "success": boolean (true if the condition is met, false otherwise)
-                  - "reason": string (brief explanation of your analysis)
-                  - "locators": array of strings (optional Playwright locators for elements you used in your analysis, e.g., ["text=Submit", "data-testid=login-button", "#header-nav"])
 
                   For locators, use standard Playwright selector strategies:
                   - Text: "text=Button Text"
@@ -71,57 +67,29 @@ export class VisualTester {
           ],
         })
 
-        const response = await this.client.invoke([message])
+        const result = await this.client.invoke([message])
 
-        // LangChain returns the content directly as a string
-        const content = response.content
-        if (!content) {
-          throw new Error('No response from AI')
+        // If we have locators, highlight the elements and take another screenshot
+        if (result.locators && result.locators.length > 0) {
+          await this.highlightElements(result.locators)
+          const highlightedScreenshot = await this.page.screenshot()
+
+          // Save the highlighted screenshot to the test report
+          await test.info().attach('ai-analysis-highlighted', {
+            body: highlightedScreenshot,
+            contentType: 'image/png',
+          })
         }
 
-        // Convert content to string if it's not already
-        const contentString = typeof content === 'string' ? content : String(content)
-
-        // Try to parse JSON response
-        try {
-          const parsed = JSON.parse(contentString)
-          result = {
-            success: parsed.success || false,
-            reason: parsed.reason || 'No reason provided',
-            locators: parsed.locators || [],
-          }
-        } catch (parseError) {
-          // If JSON parsing fails, try to extract boolean from text response
-          const lowerContent = contentString.toLowerCase()
-          const success = lowerContent.includes('true') || lowerContent.includes('yes') || lowerContent.includes('correct')
-          result = {
-            success,
-            reason: contentString,
-            locators: [],
-          }
-        }
+        return result
       } catch (error) {
         console.error('AI analysis failed:', error)
-        result = {
+        return {
           success: false,
           reason: `AI analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
           locators: [],
         }
       }
-
-      // If we have locators, highlight the elements and take another screenshot
-      if (result.locators && result.locators.length > 0) {
-        await this.highlightElements(result.locators!)
-        const highlightedScreenshot = await this.page.screenshot()
-
-        // Save the highlighted screenshot to the test report
-        await test.info().attach('ai-analysis-highlighted', {
-          body: highlightedScreenshot,
-          contentType: 'image/png',
-        })
-      }
-
-      return result
     })
   }
 
