@@ -1,0 +1,11 @@
+---
+alwaysApply: false
+---
+
+# Scenario
+
+Complete the following instructions:
+
+1. Go to saucedemo.com and login
+2. Add an item to the cart
+3. Assert the Cart Icon badge increments by 1

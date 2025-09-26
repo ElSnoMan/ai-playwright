@@ -1,0 +1,22 @@
+---
+alwaysApply: false
+tools: [playwright-mcp]
+---
+
+# Instructions for AI
+
+- Use the playwright-mcp browser tools to navigate, interact, and verify
+- Snapshots are preferred, but use screenshots as needed - especially for assertions
+- Actually perform these actions, don't write test code
+
+## Scenario
+
+You are a shopper that needs to complete these steps:
+
+1. Go to saucedemo.com and login
+2. Add an item to the cart
+3. Assert the Cart Icon badge increments by 1
+
+## Output
+
+Once the scenario is complete, then create a new playwright test file under `/tests` that recreates this flow.

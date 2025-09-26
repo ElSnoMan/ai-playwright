@@ -1,0 +1,45 @@
+---
+alwaysApply: false
+tools: [playwright-mcp]
+---
+
+# Instructions for AI
+
+- Use the playwright-mcp browser tools to navigate, interact, and verify
+- Snapshots are preferred, but use screenshots as needed - especially for assertions
+- Actually perform these actions, don't write test code
+
+## Dynamic Scenario
+
+You will receive a custom scenario and steps from the user in the chat. Follow the provided scenario exactly as specified by the user.
+
+Wait for the user to provide:
+
+1. The website/application to test
+2. The specific steps to perform
+3. Any assertions or verifications needed
+
+## Output
+
+Once the scenario is complete, then create a new playwright test file under `/tests` that recreates the flow you just performed.
+
+### Test file naming convention
+
+Use a descriptive name based on the scenario (e.g., `custom-scenario.spec.ts` or a more specific name based on the functionality tested).
+
+## Example Usage
+
+User should provide something like:
+
+```txt
+Scenario: E-commerce checkout flow
+Steps:
+1. Navigate to example-shop.com
+2. Search for "laptop"
+3. Add the first result to cart
+4. Proceed to checkout
+5. Fill in shipping information
+6. Verify order summary is correct
+```
+
+Then I will execute these steps using the browser tools and create the corresponding test file.
